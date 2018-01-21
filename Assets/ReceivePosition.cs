@@ -2,9 +2,8 @@
 using System.Collections;
 
 public class ReceivePosition : MonoBehaviour {
-    
+	public static float gammaScore;
    	public OSC osc;
-
 
 	// Use this for initialization
 	void Start () {
@@ -16,6 +15,12 @@ public class ReceivePosition : MonoBehaviour {
 	}
 
     void OnReceiveGamma(OscMessage message) {
-		print (message);
+		string stringMessage = message.ToString();
+		print (stringMessage);
+		float a = message.GetFloat (0);
+		float b = message.GetFloat (1);
+		float c = message.GetFloat (2);
+		float d = message.GetFloat (3);
+		gammaScore = a + b + c + d;
     }
 }
