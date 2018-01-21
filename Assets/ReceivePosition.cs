@@ -16,11 +16,11 @@ public class ReceivePosition : MonoBehaviour {
 
     void OnReceiveGamma(OscMessage message) {
 		string stringMessage = message.ToString();
-		print (stringMessage);
 		float a = message.GetFloat (0);
 		float b = message.GetFloat (1);
 		float c = message.GetFloat (2);
 		float d = message.GetFloat (3);
 		gammaScore = a + b + c + d;
+        print(gammaScore);
     }
 }
