@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html><head>
+    <meta content="text/html; charset=windows-1252" http-equiv="content-type">
+    
+    <title>UnityOSC - Open Sound Control (OSC) for Unity 3D</title><link href="./style/style.css" media="screen" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="./style/prettify.js"></script>
+	<script type="text/javascript" src="./scripts/toc.js"></script>
+    <script>
+
+function handleLoad() {
+ prettyPrint();
+}
+
+</script></head>
+<body onload="handleLoad();">
+  
+    <div id="container">
+        <img style="margin-left: auto; margin-right: auto; display: block;" src="images/unityosc.png">
+        <br>
+      <h1>UnityOSC</h1>
+      <p>Open Sound Control (OSC) for Unity 3D.</p>
+	  <div id="generated-toc" class="generate_from_h2"></div>
+      <h2>Get It!</h2>
+      <ul>
+        <li><a href="https://github.com/thomasfredericks/UnityOSC/archive/master.zip"><strong>Download the script and Unity example project</strong></a> (it includes communication examples for Cycling '74 Max and TouchDesigner)</li>
+        <li><a href="https://github.com/thomasfredericks/UnityOSC">UnityOSC source on
+            Github</a></li>
+      </ul><h2>The example</h2>The download (and Github projet)&nbsp; is an actual Unity project. Open the folder in Unity and everything is ready to run.<br><br><span style="font-weight: bold;">The following instructions are for using UnityOSC in your own projects :</span><br>
+        
+        
+      <h2>Importing UnityOSC</h2>
+	   <p>Import the <span class="hilite">OSC.cs</span> script into your project by dragging it into your <span class="hilite">assets</span> (the script can be found in the "Assets" folder of the Unity project).</p>Create an <span class="hilite">empty GameObject</span> and drag the
+        imported <span class="hilite">OSC.cs</span> onto it.
+      <br>
+      <p id="span">Configure the <span class="hilite">OSC</span> port and IP settings to match your needs.</p>
+      <br>
+        <img src="images/osc_cs_import.png" width="900">
+      <h2>Receiving messages</h2>
+      <p>To receive messages:</p>
+          
+          <ul>
+        <li>Create a  <span class="hilite">new script</span>.</li>
+        <li>Create a reference to the OSC script on the empty gameObject you created: <span class="code">public OSC osc;</span>. </li>
+              <li>In <span class="code">Start()</span> set the name of a function to be called when a specific OSC message is received: <span class="code"> osc.SetAddressHandler( "/CubeXYZ" , OnReceiveXYZ );</span></li>
+            <li>Create the function that will receive the OSC message.</li>
+            <li>Get the message data with <span class="code">GetFloat(index);</span>.</li>
+      </ul>
+          
+      In this example (  <span class="hilite">ReceivePosition.cs</span> ), the script will handle OSC messages with the following addresses :
+         <ul>
+             <li><span class="code">/CubeXYZ</span> followed by three floats </li>
+        <li><span class="code">/CubeX</span> followed by one float</li>
+              <li><span class="code">/CubeY</span> followed by one float</li>
+            <li><span class="code">/CubeZ</span> followed by one float</li>
+      </ul>
+        
+       <pre class="prettyprint"><code>using UnityEngine;<br>using System.Collections;<br><br>public class ReceivePosition : MonoBehaviour {<br>    <br>   	public OSC osc;<br><br><br>	// Use this for initialization<br>	void Start () {<br>       osc.SetAddressHandler( "/CubeXYZ" , OnReceiveXYZ );<br>       osc.SetAddressHandler("/CubeX", OnReceiveX);<br>       osc.SetAddressHandler("/CubeY", OnReceiveY);<br>       osc.SetAddressHandler("/CubeZ", OnReceiveZ);<br>    }<br>	<br>	// Update is called once per frame<br>	void Update () {<br>	<br>	}<br><br>	void OnReceiveXYZ(OscMessage message){<br>		float x = message.GetFloat(0);<br>         float y = message.GetFloat(1);<br>		float z = message.GetFloat(2);<br><br>		transform.position = new Vector3(x,y,z);<br>	}<br><br>    void OnReceiveX(OscMessage message) {<br>        float x = message.GetFloat(0);<br><br>        Vector3 position = transform.position;<br><br>        position.x = x;<br><br>        transform.position = position;<br>    }<br><br>    void OnReceiveY(OscMessage message) {<br>        float y = message.GetFloat(0);<br><br>        Vector3 position = transform.position;<br><br>        position.y = y;<br><br>        transform.position = position;<br>    }<br><br>    void OnReceiveZ(OscMessage message) {<br>        float z = message.GetFloat(0);<br><br>        Vector3 position = transform.position;<br><br>        position.z = z;<br><br>        transform.position = position;<br>    }<br><br><br>}<br></code>	<br></pre>
+      
+      <p>Do not forget to set the reference to the <span class="hilite">OSC.cs</span> script :</p>
+      <img src="images/osc_set_reference.png" width="900">
+      <br>
+      <hr>
+      <h2>The handler function</h2>
+                
+      <table>
+            <tbody><tr>
+                <td class="first">SetAddressHandler( <span class="hilite">address</span> , <span class="lite">name
+            of function</span> )</td>
+                <td class="second"><span class="type void">void</span></td>
+                <td> Sets a <span class="lite">handler function</span> to be called when a
+          message with the specified <span class="hilite">address</span> is
+          received</td>
+            </tr>
+             <tr>
+                <td>SetAllMessageHandler( <span class="lite">name of function</span> )</td>
+                <td><span class="type void">void</span></td>
+                <td> Sets a <span class="lite">handler function</span> to be called when
+              any message is received (there can only be one SetAllMessageHandler handler function 
+              )</td>
+            </tr>
+        </tbody></table>  
+      
+      <p>The <span class="lite">handler function</span> must be as follows :</p>
+       <pre class="prettyprint"><code>
+void NameOfFunction ( OscMessage message ) {
+
+}
+</code></pre>
+<br>
+
+           <h2>An OSC message : OscMessage</h2>
+        <table>
+            <tbody><tr>
+                <td class="first">address</td>
+                <td class="second"><span class="type string">string</span></td>
+                <td>Returns or sets the <span class="hilite">address</span> of the message</td>
+            </tr>
+             <tr>
+                <td>GetFloat( <span class="hilite">index</span> )</td>
+                <td><span class="type number">float</span></td>
+                <td>Returns the value at that <span class="hilite">index</span>
+            </td></tr>
+                <tr>
+                <td>values.Add( <span class="hilite">number</span> )</td>
+                <td><span class="type number">number</span></td>
+                <td>Adds the number to the message
+            </td></tr>
+        </tbody></table>
+        
+        <h2>Sending an OSC message</h2>
+        
+         <p>To send messages:</p>
+          
+          <ul>
+        <li>Create a  <span class="hilite">new message</span> : <span class="code"> OscMessage message = new OscMessage();</span> </li>
+        <li>Set the  <span class="hilite">address</span> : <span class="code">message.address = "/address";</span>. </li>
+              <li>Add some data : <span class="code">message.values.Add( 743 );</span> </li>
+            <li>Send the message :  <span class="code"> osc.Send(message);</span>.</li>
+           
+      </ul>
+
+        
+    </div>
+	<br>
+	<br>
+  </body></html>
